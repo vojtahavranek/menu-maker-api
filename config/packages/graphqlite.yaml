@@ -1,0 +1,10 @@
+graphqlite:
+  namespace:
+    # The namespace(s) that will store your GraphQLite controllers.
+    # It accept either a string or a list of strings.
+    controllers: MenuMaker\GraphqlController\
+    # The namespace(s) that will store your GraphQL types and factories.
+    # It accept either a string or a list of strings.
+    types:
+      - MenuMaker\Types\
+      - MenuMaker\Entity\
