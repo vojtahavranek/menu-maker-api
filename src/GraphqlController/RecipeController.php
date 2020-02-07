@@ -2,6 +2,7 @@
 
 namespace MenuMaker\GraphqlController;
 
+use MenuMaker\Entity\Recipe;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class RecipeController
@@ -9,8 +10,16 @@ class RecipeController
     /**
      * @Query()
      */
-    public function recipe(int $id): string
+    public function recipe(int $id): Recipe
     {
-        return 'Thats my ' . $id . ' recipe';
+        return new Recipe();
+    }
+
+    /**
+     * @Query()
+     */
+    public function user(): string
+    {
+        return 'user';
     }
 }
