@@ -63,10 +63,13 @@
         ]
     },
     "php": {
-        "version": "7.2"
+        "version": "7.4"
     },
     "php-http/message-factory": {
         "version": "v1.0.2"
+    },
+    "psr/event-dispatcher": {
+        "version": "1.0.0"
     },
     "psr/http-factory": {
         "version": "1.0.1"
@@ -98,11 +101,38 @@
             "./.env"
         ]
     },
+    "symfony/inflector": {
+        "version": "v5.0.4"
+    },
+    "symfony/property-access": {
+        "version": "v5.0.4"
+    },
     "symfony/psr-http-message-bridge": {
         "version": "v1.3.0"
     },
+    "symfony/security-bundle": {
+        "version": "4.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.4",
+            "ref": "7b4408dc203049666fe23fabed23cbadc6d8440f"
+        },
+        "files": [
+            "./config/packages/security.yaml"
+        ]
+    },
     "symfony/security-core": {
         "version": "v4.4.4"
+    },
+    "symfony/security-csrf": {
+        "version": "v5.0.4"
+    },
+    "symfony/security-guard": {
+        "version": "v5.0.4"
+    },
+    "symfony/security-http": {
+        "version": "v5.0.4"
     },
     "symfony/translation": {
         "version": "3.3",
