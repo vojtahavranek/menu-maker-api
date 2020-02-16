@@ -33,4 +33,20 @@ class Recipe
     {
         return 4.77;
     }
+
+    /**
+     * @Field()
+     */
+    public function getImage(): string
+    {
+        return 'http://double-kill.vojtechhavranek.cz/images/chilli-chicken.jpg';
+    }
+
+    /**
+     * @Field()
+     */
+    public function getAuthor(): string
+    {
+        return 'Vojtěch Havránek';
+    }
 }

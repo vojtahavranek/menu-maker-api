@@ -1,5 +1,8 @@
-# Created by .ignore support plugin (hsz.mobi)
-
-/vendor/
-.idea
+###> symfony/framework-bundle ###
+/.env
+/public/bundles/
 /var/
+/vendor/
+
+# Created by .ignore support plugin (hsz.mobi)
+.idea
