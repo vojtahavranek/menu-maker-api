@@ -17,7 +17,6 @@ class RecipeController
     }
 
     /**
-     * @Logged
      * @Query()
      * @return Recipe[]
      */

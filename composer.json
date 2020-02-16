@@ -6,7 +6,8 @@
         "phpstan/phpstan": "^0.12.7",
         "phpunit/phpunit": "^8.5",
         "roave/security-advisories": "dev-master",
-        "symfony/maker-bundle": "^1.14"
+        "symfony/maker-bundle": "^1.14",
+        "symfony/profiler-pack": "^1.0"
     },
     "config": {
         "preferred-install": {
