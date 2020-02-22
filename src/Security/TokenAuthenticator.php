@@ -2,12 +2,15 @@
 
 namespace MenuMaker\Security;
 
+use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
+use MenuMaker\Controller\Exception\AuthFailureException;
 use MenuMaker\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -15,11 +18,15 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 class TokenAuthenticator extends AbstractGuardAuthenticator
 {
-    private $entityManager;
+    private $tokenTTL = '1 month';
 
-    public function __construct(EntityManagerInterface $entityManager)
+    private $entityManager;
+    private $passwordEncoder;
+
+    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->entityManager = $entityManager;
+        $this->passwordEncoder = $passwordEncoder;
     }
 
 
@@ -102,5 +109,57 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     public function supportsRememberMe()
     {
         return false;
+    }
+
+    /**
+     * @throws \MenuMaker\Controller\Exception\AuthFailureException
+     */
+    public function authenticateByFormCredentials(Request $request): string
+    {
+        if (($clientId = $request->get('client_id')) === null) {
+            throw new AuthFailureException();
+        }
+
+        if (($clientSecret = $request->get('client_secret')) === null) {
+            throw new AuthFailureException();
+        }
+
+        $user = $this->entityManager->getRepository(User::class)
+            ->findOneBy(['username' => $clientId]);
+
+        if (!$this->passwordEncoder->isPasswordValid($user, $clientSecret)) {
+            throw new AuthFailureException();
+        }
+
+        $expireDate = new \DateTimeImmutable();
+        $expireDate = $expireDate->add(new DateInterval('P1M'));
+        
+        if ($user->getApiTokenExpireDate() < new \DateTimeImmutable()) {
+            try {
+                $token = $this->generateToken();
+            }
+            catch (\Exception $e) {
+                throw new AuthFailureException('Couldn\'t generate token. Please try again!', 500);
+            }
+
+            $user->setApiToken($token);
+            $user->setApiTokenExpireDate($expireDate);
+            $this->entityManager->flush();
+
+            return $token;
+        }
+
+        $user->setApiTokenExpireDate($expireDate);
+        $this->entityManager->flush();
+
+        return $user->getApiToken();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function generateToken(): string
+    {
+        return bin2hex(random_bytes(64));
     }
 }

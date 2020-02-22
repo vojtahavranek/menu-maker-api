@@ -38,6 +38,12 @@ class User implements UserInterface
      */
     private $apiToken;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $apiTokenExpireDate;
+
+
     public function getApiToken(): ?string
     {
         return $this->apiToken;
@@ -112,17 +118,30 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getSalt()
-    {
-        // not needed when using the "bcrypt" algorithm in security.yaml
-    }
-
-    /**
-     * @see UserInterface
-     */
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getApiTokenExpireDate(): \DateTimeImmutable
+    {
+        return $this->apiTokenExpireDate;
+    }
+
+    /**
+     * @param mixed $apiTokenExpireDate
+     */
+    public function setApiTokenExpireDate(\DateTimeImmutable $apiTokenExpireDate): void
+    {
+        $this->apiTokenExpireDate = $apiTokenExpireDate;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSalt(): ?string
+    {
+        return null;
     }
 }
