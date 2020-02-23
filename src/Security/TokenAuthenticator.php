@@ -125,20 +125,36 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
         }
 
         $user = $this->entityManager->getRepository(User::class)
-            ->findOneBy(['username' => $clientId]);
+            ->findOneBy(['email' => $clientId]);
 
         if (!$this->passwordEncoder->isPasswordValid($user, $clientSecret)) {
             throw new AuthFailureException();
         }
 
+        return $this->refreshToken($user);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function generateToken(): string
+    {
+        return bin2hex(random_bytes(64));
+    }
+
+    /**
+     * @return string
+     * @throws \MenuMaker\Controller\Exception\AuthFailureException
+     */
+    public function refreshToken(User $user): string
+    {
         $expireDate = new \DateTimeImmutable();
-        $expireDate = $expireDate->add(new DateInterval('P1M'));
-        
+        $expireDate = $expireDate->add(new DateInterval('P7D'));
+
         if ($user->getApiTokenExpireDate() < new \DateTimeImmutable()) {
             try {
                 $token = $this->generateToken();
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 throw new AuthFailureException('Couldn\'t generate token. Please try again!', 500);
             }
 
@@ -153,13 +169,5 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
         $this->entityManager->flush();
 
         return $user->getApiToken();
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function generateToken(): string
-    {
-        return bin2hex(random_bytes(64));
     }
 }

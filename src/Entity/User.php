@@ -43,6 +43,10 @@ class User implements UserInterface
      */
     private $apiTokenExpireDate;
 
+    public function __construct(string $email)
+    {
+        $this->email = $email;
+    }
 
     public function getApiToken(): ?string
     {
@@ -124,7 +128,7 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
-    public function getApiTokenExpireDate(): \DateTimeImmutable
+    public function getApiTokenExpireDate(): ?\DateTime
     {
         return $this->apiTokenExpireDate;
     }
