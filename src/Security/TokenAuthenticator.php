@@ -41,13 +41,15 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
 
     public function supports(Request $request)
     {
-        return $request->headers->has('X-AUTH-TOKEN');
+        return $request->headers->has('Authorization');
     }
 
     public function getCredentials(Request $request)
     {
+        $token = $request->headers->get('Authorization');
+
         return [
-            'token' => $request->headers->get('X-AUTH-TOKEN'),
+            'token' => str_replace('Bearer ', '', $token),
         ];
     }
 
@@ -114,20 +116,20 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     /**
      * @throws \MenuMaker\Controller\Exception\AuthFailureException
      */
-    public function authenticateByFormCredentials(Request $request): string
+    public function authenticateByJSONCredentials(\stdClass $data): string
     {
-        if (($clientId = $request->get('client_id')) === null) {
-            throw new AuthFailureException();
+        if ($data->client_id === null) {
+            throw new AuthFailureException('no client_id');
         }
 
-        if (($clientSecret = $request->get('client_secret')) === null) {
-            throw new AuthFailureException();
+        if ($data->client_secret === null) {
+            throw new AuthFailureException('no client_secret');
         }
 
         $user = $this->entityManager->getRepository(User::class)
-            ->findOneBy(['email' => $clientId]);
+            ->findOneBy(['email' => $data->client_id]);
 
-        if (!$this->passwordEncoder->isPasswordValid($user, $clientSecret)) {
+        if (!$this->passwordEncoder->isPasswordValid($user, $data->client_secret)) {
             throw new AuthFailureException();
         }
 

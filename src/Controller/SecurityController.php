@@ -28,8 +28,10 @@ class SecurityController extends AbstractController
      */
     public function authorizeAction(Request $request): Response
     {
+        $data = json_decode($request->getContent());
+
         try {
-            $token = $this->tokenAuthenticator->authenticateByFormCredentials($request);
+            $token = $this->tokenAuthenticator->authenticateByJSONCredentials($data);
         } catch (AuthFailureException $e) {
             return new JsonResponse(['error' => $e->getMessage()], $e->getCode());
         }

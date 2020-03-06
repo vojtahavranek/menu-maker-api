@@ -4,8 +4,11 @@ namespace MenuMaker\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use TheCodingMachine\GraphQLite\Annotations\Field;
+use TheCodingMachine\GraphQLite\Annotations\Type;
 
 /**
+ * @Type()
  * @ORM\Entity(repositoryClass="MenuMaker\Repository\UserRepository")
  */
 class User implements UserInterface
@@ -63,6 +66,9 @@ class User implements UserInterface
         return $this->id;
     }
 
+    /**
+     * @Field()
+     */
     public function getEmail(): ?string
     {
         return $this->email;
