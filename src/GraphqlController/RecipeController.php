@@ -3,6 +3,7 @@
 namespace MenuMaker\GraphqlController;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NoResultException;
 use MenuMaker\Entity\Recipe;
 use MenuMaker\Repository\RecipeRepository;
 use MenuMaker\Types\Crates\RecipeCrate;
@@ -51,9 +52,13 @@ class RecipeController
     /**
      * @Query()
      */
-    public function recipe(int $id): Recipe
+    public function recipe(int $id, string $slug): ?Recipe
     {
-        return new Recipe();
+        try {
+            return $this->recipeRepository->getRecipeAndCheckSlug($id, $slug);
+        } catch (NoResultException $e) {
+            return null;
+        }
     }
 
     /**
@@ -63,12 +68,7 @@ class RecipeController
      */
     public function makemenu(): array
     {
-        return [
-            new Recipe(),
-            new Recipe(),
-            new Recipe(),
-            new Recipe()
-        ];
+        return $this->recipeRepository->findAll();
     }
 
     /**
