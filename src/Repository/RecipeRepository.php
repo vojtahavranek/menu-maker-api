@@ -21,19 +21,32 @@ class RecipeRepository extends ServiceEntityRepository
         parent::__construct($registry, Recipe::class);
     }
 
-    /**
-     * @throws \Doctrine\ORM\NoResultException
-     */
+    /** @throws \Doctrine\ORM\NoResultException */
     public function getRecipeAndCheckSlug(int $id, string $slug): Recipe
     {
+        return $this->recipeGetter($id, $slug);
+    }
+
+    /** @throws \Doctrine\ORM\NoResultException */
+    public function getRecipe(int $id): Recipe
+    {
+        return $this->recipeGetter($id);
+    }
+
+    /** @throws \Doctrine\ORM\NoResultException */
+    private function recipeGetter(int $id, string $slug = null): Recipe
+    {
         try {
-            return $this->createQueryBuilder('r')
-                ->where('r.id = :id AND r.slug = :slug')
-                ->setParameters([
-                    'id'   => $id,
-                    'slug' => $slug
-                ])
-                ->getQuery()
+            $query = $this->createQueryBuilder('r')
+                ->where('r.id = :id')
+                ->setParameter('id', $id);
+
+                if ($slug !== null) {
+                    $query->andWhere('r.slug = :slug')
+                        ->setParameter('slug', $slug);
+                }
+
+                return $query->getQuery()
                 ->getSingleResult();
         } catch (NonUniqueResultException $e) {
             // this should never happen but

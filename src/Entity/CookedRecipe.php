@@ -27,6 +27,21 @@ class CookedRecipe
      */
     private $recipe;
 
+    /**
+     * CookedRecipe constructor.
+     *
+     * @param $date
+     */
+    public function __construct(\DateTime $date = null)
+    {
+        if ($date === null) {
+            $date = new \DateTime();
+        }
+
+        $this->date = $date;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -37,22 +52,8 @@ class CookedRecipe
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
-    {
-        $this->date = $date;
-
-        return $this;
-    }
-
-    public function getRecipe(): ?Recipe
-    {
-        return $this->recipe;
-    }
-
-    public function setRecipe(?Recipe $recipe): self
+    public function setRecipe(?Recipe $recipe): void
     {
         $this->recipe = $recipe;
-
-        return $this;
     }
 }

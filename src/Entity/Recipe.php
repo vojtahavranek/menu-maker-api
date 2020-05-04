@@ -101,14 +101,14 @@ class Recipe
         return $this->cooked;
     }
 
-    public function addCooked(CookedRecipe $cooked): self
+    public function cook(\DateTime $date = null): CookedRecipe
     {
-        if (!$this->cooked->contains($cooked)) {
-            $this->cooked[] = $cooked;
-            $cooked->setRecipe($this);
-        }
+        $cookedRecipe = new CookedRecipe($date);
 
-        return $this;
+        $this->cooked[] = $cookedRecipe;
+        $cookedRecipe->setRecipe($this);
+
+        return $cookedRecipe;
     }
 
     public function removeCooked(CookedRecipe $cooked): self

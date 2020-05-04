@@ -31,6 +31,7 @@ class RecipeController
      */
     public function addRecipe(RecipeCrate $recipeCrate): bool
     {
+        // TODO: make facade to handle
         $recipe = RecipeFactory::createRecipeFromCrate($recipeCrate);
         $this->entityManager->persist($recipe);
         $this->entityManager->flush();
@@ -40,11 +41,17 @@ class RecipeController
 
     /**
      * @Mutation()
-     * @Logged()
      */
     public function cookRecipe(int $id): bool
     {
-        $recipe = $this->recipeRepository->find($id);
+        try {
+            // TODO: make facade to handle
+            $recipe = $this->recipeRepository->getRecipe($id);
+            $this->entityManager->persist($recipe->cook());
+            $this->entityManager->flush();
+        } catch (NoResultException $e) {
+            return false;
+        }
 
         return true;
     }
