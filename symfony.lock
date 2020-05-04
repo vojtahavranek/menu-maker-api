@@ -141,6 +141,12 @@
     "php-http/message-factory": {
         "version": "v1.0.2"
     },
+    "phpstan/phpstan": {
+        "version": "0.12.18"
+    },
+    "phpstan/phpstan-symfony": {
+        "version": "0.12.4"
+    },
     "psr/event-dispatcher": {
         "version": "1.0.0"
     },

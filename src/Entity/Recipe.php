@@ -5,15 +5,19 @@ namespace MenuMaker\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use MenuMaker\Entity\Traits\SluggableTrait;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
 /**
- * @Type()
+ * @Type
  * @ORM\Entity(repositoryClass="MenuMaker\Repository\RecipeRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Recipe
 {
+    use SluggableTrait;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -22,18 +26,31 @@ class Recipe
     private $id;
 
     /**
+     * @ORM\Column(length=128, nullable=false)
+     */
+    private $name;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $description;
+
+    /**
+     * @ORM\Column(length=256)
+     */
+    private $image;
+
+    /**
      * @ORM\OneToMany(targetEntity="MenuMaker\Entity\CookedRecipe", mappedBy="recipe", orphanRemoval=true)
      */
     private $cooked;
 
-    public function __construct()
+    public function __construct(string $name, ?string $description, ?string $image)
     {
         $this->cooked = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
+        $this->name = $name;
+        $this->description = $description;
+        $this->image = $image;
     }
 
     /**
@@ -41,7 +58,7 @@ class Recipe
      */
     public function getName(): string
     {
-        return 'test name';
+        return $this->name;
     }
 
     /**
@@ -49,7 +66,7 @@ class Recipe
      */
     public function getDescription(): string
     {
-        return 'test long long long description';
+        return $this->description;
     }
 
     /**
