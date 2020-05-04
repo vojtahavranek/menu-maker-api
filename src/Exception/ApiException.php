@@ -2,8 +2,6 @@
 
 namespace MenuMaker\Exception;
 
-use Throwable;
-
 class ApiException extends \Exception
 {
     public function __toString()
@@ -14,6 +12,6 @@ class ApiException extends \Exception
             'trace'   => $this->getTraceAsString(),
         ];
 
-        return json_encode($message);
+        return (string) json_encode($message);
     }
 }

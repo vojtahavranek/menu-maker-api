@@ -82,7 +82,7 @@ class Recipe
      */
     public function getImage(): string
     {
-        return 'http://double-kill.vojtechhavranek.cz/images/chilli-chicken.jpg';
+        return $this->image;
     }
 
     /**

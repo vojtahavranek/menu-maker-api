@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace MenuMaker\Types\Crates;
+namespace MenuMaker\Types\Input;
 
-class RecipeCrate
+class Recipe
 {
     private $name;
     private $description;

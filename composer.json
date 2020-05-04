@@ -44,6 +44,7 @@
         "symfony/security-bundle": "5.0.*",
         "symfony/security-core": "5.0.*",
         "symfony/yaml": "5.0.*",
-        "thecodingmachine/graphqlite-bundle": "^4.0"
+        "thecodingmachine/graphqlite-bundle": "^4.0",
+        "ext-json": "*"
     }
 }

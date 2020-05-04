@@ -3,21 +3,24 @@
 namespace MenuMaker\Types;
 
 use MenuMaker\Entity\Recipe;
-use MenuMaker\Types\Crates\RecipeCrate;
+use MenuMaker\Exception\Recipe\EmptyRecipeNameException;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 class RecipeFactory
 {
-    /**
-     * @Factory()
-     */
-    public function createRecipe(string $name, ?string $image, ?string $description): RecipeCrate
+    /** @Factory() */
+    public function createRecipe(string $name, ?string $image, ?string $description): Input\Recipe
     {
-        return new RecipeCrate($name, $description, $image);
+        return new Input\Recipe($name, $description, $image);
     }
 
-    public static function createRecipeFromCrate(RecipeCrate $crate): Recipe
+    /** @throws \MenuMaker\Exception\Recipe\EmptyRecipeNameException */
+    public static function createRecipeFromInput(Input\Recipe $recipeInput): Recipe
     {
-        return new Recipe($crate->getName(), $crate->getDescription(), $crate->getImage());
+        if ($recipeInput->getName() === '') {
+            throw new EmptyRecipeNameException();
+        }
+        
+        return new Recipe($recipeInput->getName(), $recipeInput->getDescription(), $recipeInput->getImage());
     }
 }

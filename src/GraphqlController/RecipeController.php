@@ -5,12 +5,14 @@ namespace MenuMaker\GraphqlController;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use MenuMaker\Entity\Recipe;
+use MenuMaker\Exception\Recipe\EmptyRecipeNameException;
 use MenuMaker\Repository\RecipeRepository;
-use MenuMaker\Types\Crates\RecipeCrate;
+use MenuMaker\Types\Input\Recipe as RecipeInput;
 use MenuMaker\Types\RecipeFactory;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Mutation;
 use TheCodingMachine\GraphQLite\Annotations\Query;
+use TheCodingMachine\GraphQLite\Exceptions\GraphQLException;
 
 class RecipeController
 {
@@ -28,12 +30,18 @@ class RecipeController
 
     /**
      * @Mutation()
+     * @throws \TheCodingMachine\GraphQLite\Exceptions\GraphQLException
      */
-    public function addRecipe(RecipeCrate $recipeCrate): bool
+    public function addRecipe(RecipeInput $recipe): bool
     {
         // TODO: make facade to handle
-        $recipe = RecipeFactory::createRecipeFromCrate($recipeCrate);
-        $this->entityManager->persist($recipe);
+        try {
+            $recipeEntity = RecipeFactory::createRecipeFromInput($recipe);
+        } catch (EmptyRecipeNameException $e) {
+            throw new GraphQLException($e->getMessage(), 500);
+        }
+
+        $this->entityManager->persist($recipeEntity);
         $this->entityManager->flush();
 
         return true;
@@ -41,6 +49,7 @@ class RecipeController
 
     /**
      * @Mutation()
+     * @throws \TheCodingMachine\GraphQLite\Exceptions\GraphQLException
      */
     public function cookRecipe(int $id): bool
     {
@@ -50,7 +59,7 @@ class RecipeController
             $this->entityManager->persist($recipe->cook());
             $this->entityManager->flush();
         } catch (NoResultException $e) {
-            return false;
+            throw new GraphQLException('Recipe note found');
         }
 
         return true;
@@ -58,13 +67,14 @@ class RecipeController
 
     /**
      * @Query()
+     * @throws \TheCodingMachine\GraphQLite\Exceptions\GraphQLException
      */
     public function recipe(int $id, string $slug): ?Recipe
     {
         try {
             return $this->recipeRepository->getRecipeAndCheckSlug($id, $slug);
         } catch (NoResultException $e) {
-            return null;
+            throw new GraphQLException('Recipe note found');
         }
     }
 
