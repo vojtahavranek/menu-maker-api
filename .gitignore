@@ -6,3 +6,8 @@
 
 # Created by .ignore support plugin (hsz.mobi)
 .idea
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

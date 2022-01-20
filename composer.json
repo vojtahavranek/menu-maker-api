@@ -46,5 +46,11 @@
         "symfony/yaml": "5.0.*",
         "thecodingmachine/graphqlite-bundle": "^4.0",
         "ext-json": "*"
+    },
+    "scripts": {
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        }
     }
 }
